@@ -1,5 +1,5 @@
 ## Management System
-본 프로젝트는 React학습 목적으로 만들어진 고객 관리 시스템(Management System)입니다.
+사진을 업로드하고 공유할 수 있는 블로그
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

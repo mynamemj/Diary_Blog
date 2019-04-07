@@ -1,58 +1,55 @@
-const fs = require('fs');
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT ||5000;
+const account= require('./routes/account');
+const posts = require('./routes/posts');
+const connection =require('./mysql');
+connection.connect();
 
+const session =require('express-session');
+app.use(session({
+    secret: 'Mj1$2$3$4$',
+    resave : false,
+    saveUninitialized:true
+}));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
-
-app.get('/api/hello',(req,res)=> {
-    res.send({message : 'JHello Express!'});
-});
-const data = fs.readFileSync('./database.json');
-const conf = JSON.parse(data);
-const mysql = require('mysql');
-
-const connection = mysql.createConnection({
-    host:conf.host,
-    user:conf.user,
-    password:conf.password,
-    port:conf.port,
-    database:conf.database
-});
-connection.connect();
-app.get('/api/customers',(req,res)=>{
-    connection.query("SELECT * FROM CUSTOMER WHERE isDeleted = 0",(err,rows,fields)=>{
-        // console.log(rows)
-        res.send(rows); } 
-      );
-});
+app.use('/', express.static(__dirname + "/../public"));
 const multer=require('multer');
+//multer를 이용해 파일을 저장가능 ./upload에 저장
 const upload=multer({dest:'./upload'});
-app.use('/image',express.static('./upload'));
-app.post('/api/customerss',upload.single('image'),(req,res)=>{
-    let sql="INSERT INTO CUSTOMER VALUES (null,?,?,?,?,?,now(),0)";
-    let image='/image/'+req.file.filename
-    let name=req.body.name;
-    let birthday=req.body.birthday;
-    let gender=req.body.gender;
-    let job=req.body.job;
-    let params=[image,name,birthday,gender,job];
-    connection.query(sql,params,(err,rows,fields)=>{
-        console.log(err);
-        console.log(rows);
-        
-        res.send(rows);
-    })
-})
 
-app.delete('/api/customers/:id',(req,res)=>{
-    let sql = 'UPDATE CUSTOMER SET isDeleted = 1 WHERE id = ?';
-    let params= [req.params.id];
-    connection.query(sql,params,(err,rows,fields)=>{
-        res.send(rows);
-    })
-})
+app.use('/image',express.static('./upload'));
+
+app.use('/account',account);
+app.use('/posts',posts);
+
+
+// app.use('/api',router);
+/* handle error */
+app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+  });
+
+
+// app.get('/api/customers',(req,res)=>{
+//     connection.query("SELECT * FROM USER ",(err,rows,fields)=>{
+//         res.send(rows); } 
+//       );
+// });
+  
+  //---------------------회원가입-----------------
+  
+//---------------------회원삭제----------------------------
+// app.delete('/api/customers/:id',(req,res)=>{
+//     let sql = 'UPDATE CUSTOMER SET isDeleted = 1 WHERE id = ?';
+//     let params= [req.params.id];
+//     connection.query(sql,params,(err,rows,fields)=>{
+//         res.send(rows);
+//     })
+// });
 app.listen(port,()=>{console.log(`Listening on port ${port}`);});

@@ -10,6 +10,7 @@ class Customer extends React.Component{
         return(       
             <TableRow>
                 <TableCell>{this.props.id}</TableCell>
+                <TableCell>{this.props.userid}</TableCell>
                 <TableCell><img src={this.props.image} alt='image'/></TableCell>
                 <TableCell>{this.props.name}</TableCell>
                 <TableCell>{this.props.birthday}</TableCell>

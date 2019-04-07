@@ -1,5 +1,5 @@
 import React from 'react';
-import {post} from 'axios';
+import axios from 'axios';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -18,10 +18,9 @@ class CustomerAdd extends React.Component{
         super(props);
         this.state={
             file:null,
+            userid:'',
+            password:'',
             userName:'',
-            birthday:'',
-            gender:'',
-            job:'',
             fileName:'',
             open: false
         }
@@ -51,12 +50,11 @@ handleValueChange=(e)=>{
             })
             this.setState({
                 file:null,
+                userid:'',
+                password:'',
                 userName:'',
-                birthday:'',
-                gender:'',
-                job:'',
                 fileName:'',
-                
+                open: false
             })
             
     }
@@ -64,6 +62,8 @@ handleValueChange=(e)=>{
         const url='api/customerss';
         const formData = new FormData();
         formData.append('image',this.state.file);
+        formData.append('userid',this.state.userid);
+        formData.append('password',this.state.password);
         formData.append('name',this.state.userName);
         formData.append('birthday',this.state.birthday);
         formData.append('gender',this.state.gender);
@@ -83,10 +83,9 @@ handleValueChange=(e)=>{
     handleClose = () => {
         this.setState({
             file:null,
+            userid:'',
+            password:'',
             userName:'',
-            birthday:'',
-            gender:'',
-            job:'',
             fileName:'',
             open:false
         })
@@ -108,10 +107,9 @@ handleValueChange=(e)=>{
                         {this.state.fileName===''?'프로필 이미지 선택':this.state.fileName}</Button>
                     </label>
                     <br/>
+                    <TextField label='ID' type='text' name='userid' value={this.state.userid} onChange={this.handleValueChange}/> <br/>
+                    <TextField label='Password' type='text' name='password' value={this.state.password} onChange={this.handleValueChange}/> <br/>
                     <TextField label='이름' type='text' name='userName' value={this.state.userName} onChange={this.handleValueChange}/> <br/>
-                    <TextField label='생년원일' type='text' name='birthday' value={this.state.birthday} onChange={this.handleValueChange}/> <br/>
-                    <TextField label='성별' type='text' name='gender' value={this.state.gender} onChange={this.handleValueChange}/> <br/>
-                    <TextField label='직업' type='text' name='job' value={this.state.job} onChange={this.handleValueChange}/>
                 </DialogContent>
                 <DialogActions>
                     <Button variant='contained' color='primary' onClick={this.handleFormSubmit}>추가</Button>
